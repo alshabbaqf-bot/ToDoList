@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ToDoTableViewController: UITableViewController {
+class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
     
     var toDos: [ToDo] = []
 
@@ -34,12 +34,13 @@ class ToDoTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCellIdentifier", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCellIdentifier", for: indexPath) as! ToDoCell
 
         let toDo = toDos[indexPath.row]
-        var content = cell.defaultContentConfiguration()
-        content.text = toDo.title
-        cell.contentConfiguration = content
+        cell.titleLabel?.text = toDo.title
+        cell.isCompleteButton.isSelected = toDo.isComplete
+        cell.delegate = self
+        
         return cell
     }
 
@@ -47,7 +48,6 @@ class ToDoTableViewController: UITableViewController {
         return true
     }
 
-    // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             toDos.remove(at: indexPath.row)
@@ -69,42 +69,24 @@ class ToDoTableViewController: UITableViewController {
         return true
     }
     */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
     
     @IBAction func unwindToToDoList(segue: UIStoryboardSegue) {
         guard segue.identifier == "saveUnwind" else { return }
         let sourceViewController = segue.source as! ToDoDetailTableViewController
-        
+
         if let toDo = sourceViewController.toDo {
-            let newIndexPath = IndexPath(row: toDos.count, section: 0)
-            
-            toDos.append(toDo)
-            tableView.insertRows(at: [newIndexPath], with: .automatic)
+            if let indexOfExistingToDo = toDos.firstIndex(of: toDo) {
+                toDos[indexOfExistingToDo] = toDo
+                tableView.reloadRows(at: [IndexPath(row: indexOfExistingToDo, section: 0)], with: .automatic)
+            } else {
+                let newIndexPath = IndexPath(row: toDos.count, section: 0)
+                toDos.append(toDo)
+                tableView.insertRows(at: [newIndexPath], with: .automatic)
+            }
         }
-//
-//        if let todo = sourceViewController.todo {
-//            if let indexOfExistingToDo = todos.firstIndex(of: todo) {
-//                todos[indexOfExistingToDo] = todo
-//                tableView.reloadRows(at: [IndexPath(row: indexOfExistingToDo, section: 0)], with: .automatic)
-//            } else {
-//                let newIndexPath = IndexPath(row: todos.count, section: 0)
-//                todos.append(todo)
-//                tableView.insertRows(at: [newIndexPath], with: .automatic)
-//            }
-//        }
-//        
-//        ToDo.saveToDos(todos)
+        
+//        ToDo.saveToDos(toDos)
     }// unwindToToDoList end
-    
     
     @IBSegueAction func editToDo(_ coder: NSCoder, sender: Any?) -> ToDoDetailTableViewController? {
         let detailController = ToDoDetailTableViewController(coder: coder)
@@ -120,4 +102,14 @@ class ToDoTableViewController: UITableViewController {
         
         return detailController
     }
-}
+    
+    func checkmarkTapped(sender: ToDoCell) {
+        if let indexPath = tableView.indexPath(for: sender) {
+            var toDo = toDos[indexPath.row]
+            toDo.isComplete.toggle()
+            toDos[indexPath.row] = toDo
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+//            ToDo.saveToDos(toDos)
+        }
+    }
+}// class end

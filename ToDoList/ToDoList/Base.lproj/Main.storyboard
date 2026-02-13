@@ -16,14 +16,49 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ToDoCellIdentifier" id="8pk-Ps-pC0">
-                                <rect key="frame" x="0.0" y="50" width="393" height="53"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ToDoCellIdentifier" id="8pk-Ps-pC0" customClass="ToDoCell" customModule="ToDoList" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="50" width="393" height="52"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="8pk-Ps-pC0" id="4LN-la-waz">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="53"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="393" height="52"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6TK-lr-2Q2">
+                                            <rect key="frame" x="8" y="4" width="44" height="44"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="44" id="395-vC-jc9"/>
+                                                <constraint firstAttribute="height" constant="44" id="UYr-ee-LYr"/>
+                                            </constraints>
+                                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                            <state key="normal" image="circle" catalog="system">
+                                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="24"/>
+                                            </state>
+                                            <state key="selected" image="checkmark.circle.fill" catalog="system">
+                                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="24"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="completeButtonTapped:" destination="8pk-Ps-pC0" eventType="touchUpInside" id="fjQ-tb-vJv"/>
+                                            </connections>
+                                        </button>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Txd-D0-ePR">
+                                            <rect key="frame" x="52" y="15" width="305" height="22"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="Txd-D0-ePR" firstAttribute="leading" secondItem="6TK-lr-2Q2" secondAttribute="trailing" id="7iH-WQ-LD7"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="Txd-D0-ePR" secondAttribute="bottom" id="Ctn-Wb-8Ts"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="Txd-D0-ePR" secondAttribute="trailing" constant="16" id="GId-Hr-cvG"/>
+                                        <constraint firstItem="6TK-lr-2Q2" firstAttribute="centerY" secondItem="4LN-la-waz" secondAttribute="centerY" id="O40-BC-Uhr"/>
+                                        <constraint firstItem="Txd-D0-ePR" firstAttribute="top" secondItem="4LN-la-waz" secondAttribute="topMargin" id="c82-4L-axh"/>
+                                        <constraint firstItem="6TK-lr-2Q2" firstAttribute="leading" secondItem="4LN-la-waz" secondAttribute="leading" constant="8" id="esb-ca-z1E"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                                 <connections>
+                                    <outlet property="isCompleteButton" destination="6TK-lr-2Q2" id="PId-fB-Qnb"/>
+                                    <outlet property="titleLabel" destination="Txd-D0-ePR" id="97m-cf-rzg"/>
                                     <segue destination="X2l-Gj-MIl" kind="presentation" id="ubR-Rf-uj3"/>
                                 </connections>
                             </tableViewCell>
@@ -43,7 +78,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bu4-sO-yRQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-153" y="779"/>
+            <point key="canvasLocation" x="-153.43511450381678" y="778.87323943661977"/>
         </scene>
         <!--New To-Do-->
         <scene sceneID="6q2-oP-w6k">
