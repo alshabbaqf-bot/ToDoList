@@ -112,7 +112,39 @@ class ToDoDetailTableViewController: UITableViewController {
     }
     
     @IBAction func reminderSwitchChanged(_ sender: UISwitch) {
+        if sender.isOn && dueDatePicker.date <= Date() {
+                sender.setOn(false, animated: true)
+            }
+    }
+    @IBAction func datePickerChanged(_ sender: UIDatePicker) {
+        updateDueDateLabel(date: sender.date)
         
+        if reminderSwitch.isOn && sender.date <= Date() {
+            reminderSwitch.setOn(false, animated: true)
+        }
+    }
+    
+    @IBAction func shareTapped(_ sender: UIBarButtonItem) {
+        let title = titleTextField.text ?? ""
+            let isComplete = isCompleteButton.isSelected
+            let dueDate = dueDatePicker.date
+            let notes = notesTextView.text ?? ""
+
+            let statusText = isComplete ? "Completed" : "Not Completed"
+            let dueText = dueDate.formatted(.dateTime.month().day().year().hour().minute())
+
+            var shareText = "To-Do: \(title)\nStatus: \(statusText)\nDue: \(dueText)"
+
+            if !notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                shareText += "\nNotes: \(notes)"
+            }
+
+            let activityVC = UIActivityViewController(activityItems: [shareText], applicationActivities: nil)
+
+            // iPad safety (doesn’t hurt on iPhone)
+            activityVC.popoverPresentationController?.barButtonItem = sender
+
+            present(activityVC, animated: true)
     }
     
     // MARK: - Navigation

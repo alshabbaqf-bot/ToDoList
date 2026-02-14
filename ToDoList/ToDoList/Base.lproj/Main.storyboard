@@ -167,14 +167,15 @@
                                                         <action selector="reminderSwitchChanged:" destination="frW-1x-PO6" eventType="valueChanged" id="5XH-eQ-hz3"/>
                                                     </connections>
                                                 </switch>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reminder" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8fP-ZH-EGg">
-                                                    <rect key="frame" x="235" y="14.999999999999998" width="73" height="22.333333333333329"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reminder" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8fP-ZH-EGg">
+                                                    <rect key="frame" x="16" y="14.999999999999998" width="292" height="22.333333333333329"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="8fP-ZH-EGg" firstAttribute="leading" secondItem="QzN-pZ-3hF" secondAttribute="leading" constant="16" id="3IN-TX-rG0"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="8fP-ZH-EGg" secondAttribute="bottom" id="FD7-Ar-yqC"/>
                                                 <constraint firstAttribute="trailing" secondItem="NNL-9O-yr2" secondAttribute="trailing" constant="16" id="SjB-dC-J0s"/>
                                                 <constraint firstItem="NNL-9O-yr2" firstAttribute="centerY" secondItem="8fP-ZH-EGg" secondAttribute="centerY" id="bll-to-Mll"/>
@@ -216,6 +217,9 @@
                                             <subviews>
                                                 <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" style="wheels" translatesAutoresizingMaskIntoConstraints="NO" id="jxv-VT-ftC">
                                                     <rect key="frame" x="0.0" y="0.0" width="393" height="217"/>
+                                                    <connections>
+                                                        <action selector="datePickerChanged:" destination="frW-1x-PO6" eventType="valueChanged" id="bxA-yR-ySi"/>
+                                                    </connections>
                                                 </datePicker>
                                             </subviews>
                                             <constraints>
@@ -267,11 +271,18 @@
                                 <segue destination="U7x-N6-Jzv" kind="unwind" identifier="" unwindAction="unwindToToDoListWithSegue:" id="ccG-Qj-awD"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="uUO-gS-A2z">
-                            <connections>
-                                <segue destination="U7x-N6-Jzv" kind="unwind" identifier="saveUnwind" unwindAction="unwindToToDoListWithSegue:" id="ysI-xg-Yrc"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="action" id="t9X-qq-VXq">
+                                <connections>
+                                    <action selector="shareTapped:" destination="frW-1x-PO6" id="RSc-4x-cmU"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem systemItem="save" id="uUO-gS-A2z">
+                                <connections>
+                                    <segue destination="U7x-N6-Jzv" kind="unwind" identifier="saveUnwind" unwindAction="unwindToToDoListWithSegue:" id="ysI-xg-Yrc"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="dueDateLabel" destination="aG7-2L-dvz" id="sSn-nx-Itq"/>

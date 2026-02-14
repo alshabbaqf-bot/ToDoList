@@ -8,7 +8,7 @@
 import UIKit
 import UserNotifications
 
-class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
+class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNotificationCenterDelegate {
     
     var toDos: [ToDo] = []
 
@@ -16,6 +16,8 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
         super.viewDidLoad()
         
         requestNotificationAuthorization()
+        
+        UNUserNotificationCenter.current().delegate = self
         
         if let savedToDos = ToDo.loadToDos() {
             toDos = savedToDos
@@ -163,6 +165,11 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
     private func requestNotificationAuthorization() {
         UNUserNotificationCenter.current()
             .requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in }
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        return [.banner, .sound]
     }
     
     private func scheduleNotification(for toDo: ToDo) {
