@@ -8,9 +8,14 @@
 import UIKit
 import UserNotifications
 
-class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNotificationCenterDelegate {
+class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNotificationCenterDelegate, UISearchResultsUpdating {
     
     var toDos: [ToDo] = []
+    
+    private var filteredToDos: [ToDo] = []
+    private var isSearching: Bool = false
+    
+    private let searchController = UISearchController(searchResultsController: nil)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +31,8 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
         }
         
         navigationItem.leftBarButtonItem = editButtonItem
+        
+        setupSearchController()
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -34,14 +41,13 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return toDos.count
+        return isSearching ? filteredToDos.count : toDos.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCellIdentifier", for: indexPath) as! ToDoCell
 
-        let toDo = toDos[indexPath.row]
+        let toDo = isSearching ? filteredToDos[indexPath.row] : toDos[indexPath.row]
         cell.titleLabel?.text = toDo.title
         cell.isCompleteButton.isSelected = toDo.isComplete
         cell.delegate = self
@@ -80,12 +86,24 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let toDo = toDos[indexPath.row]
-            cancelNotification(for: toDo)
-            toDos.remove(at: indexPath.row)
+            let toDoToDelete: ToDo
+
+            if isSearching {
+                toDoToDelete = filteredToDos[indexPath.row]
+                filteredToDos.remove(at: indexPath.row)
+
+                if let mainIndex = toDos.firstIndex(of: toDoToDelete) {
+                    toDos.remove(at: mainIndex)
+                }
+            } else {
+                toDoToDelete = toDos[indexPath.row]
+                toDos.remove(at: indexPath.row)
+            }
+
+            cancelNotification(for: toDoToDelete)
             tableView.deleteRows(at: [indexPath], with: .automatic)
+            ToDo.saveToDos(toDos)
         }
-        ToDo.saveToDos(toDos)
     }
 
     /*
@@ -124,9 +142,12 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
             }
         }
         
-        
-        
         ToDo.saveToDos(toDos)
+        
+        if isSearching {
+            filterContent(for: searchController.searchBar.text ?? "")
+        }
+
     }// unwindToToDoList end
     
     @IBSegueAction func editToDo(_ coder: NSCoder, sender: Any?) -> ToDoDetailTableViewController? {
@@ -139,19 +160,40 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
         
         tableView.deselectRow(at: indexPath, animated: true)
         
-        detailController?.toDo = toDos[indexPath.row]
+        detailController?.toDo = isSearching ? filteredToDos[indexPath.row] : toDos[indexPath.row]
         
         return detailController
     }
     
     func checkmarkTapped(sender: ToDoCell) {
-        if let indexPath = tableView.indexPath(for: sender) {
-            var toDo = toDos[indexPath.row]
-            
-            toDo.isComplete.toggle()
-            
-            cancelNotification(for: toDo)
+        guard let indexPath = tableView.indexPath(for: sender) else { return }
 
+        if isSearching {
+            // Toggle in filtered list
+            var toDo = filteredToDos[indexPath.row]
+            toDo.isComplete.toggle()
+
+            // Apply change back to main list using id
+            if let mainIndex = toDos.firstIndex(of: toDo) {
+                toDos[mainIndex] = toDo
+            }
+
+            // Update filtered list too
+            filteredToDos[indexPath.row] = toDo
+
+            cancelNotification(for: toDo)
+            if toDo.shouldRemind && !toDo.isComplete {
+                scheduleNotification(for: toDo)
+            }
+
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+            ToDo.saveToDos(toDos)
+        } else {
+            // Normal behavior (not searching)
+            var toDo = toDos[indexPath.row]
+            toDo.isComplete.toggle()
+
+            cancelNotification(for: toDo)
             if toDo.shouldRemind && !toDo.isComplete {
                 scheduleNotification(for: toDo)
             }
@@ -200,6 +242,44 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
     private func cancelNotification(for toDo: ToDo) {
         UNUserNotificationCenter.current()
             .removePendingNotificationRequests(withIdentifiers: [toDo.id.uuidString])
+    }
+    
+    private func setupSearchController() {
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search to-dos"
+        
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        
+        definesPresentationContext = true
+    }
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        let searchText = searchController.searchBar.text ?? ""
+        filterContent(for: searchText)
+    }
+    
+    private func filterContent(for searchText: String) {
+        let trimmed = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !trimmed.isEmpty else {
+            isSearching = false
+            filteredToDos = []
+            tableView.reloadData()
+            return
+        }
+
+        isSearching = true
+        let lower = trimmed.lowercased()
+
+        filteredToDos = toDos.filter { toDo in
+            let titleMatch = toDo.title.lowercased().contains(lower)
+            let notesMatch = (toDo.notes ?? "").lowercased().contains(lower)
+            return titleMatch || notesMatch
+        }
+
+        tableView.reloadData()
     }
 
 }// class end
