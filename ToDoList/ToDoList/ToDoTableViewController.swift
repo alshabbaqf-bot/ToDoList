@@ -53,6 +53,7 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
             toDos.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
+        ToDo.saveToDos(toDos)
     }
 
     /*
@@ -85,7 +86,7 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
             }
         }
         
-//        ToDo.saveToDos(toDos)
+        ToDo.saveToDos(toDos)
     }// unwindToToDoList end
     
     @IBSegueAction func editToDo(_ coder: NSCoder, sender: Any?) -> ToDoDetailTableViewController? {
@@ -109,7 +110,7 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
             toDo.isComplete.toggle()
             toDos[indexPath.row] = toDo
             tableView.reloadRows(at: [indexPath], with: .automatic)
-//            ToDo.saveToDos(toDos)
+            ToDo.saveToDos(toDos)
         }
     }
 }// class end
