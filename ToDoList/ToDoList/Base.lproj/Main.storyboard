@@ -17,14 +17,14 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ToDoCellIdentifier" id="8pk-Ps-pC0" customClass="ToDoCell" customModule="ToDoList" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="50" width="393" height="52"/>
+                                <rect key="frame" x="0.0" y="50" width="393" height="61"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="8pk-Ps-pC0" id="4LN-la-waz">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="52"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="393" height="61"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6TK-lr-2Q2">
-                                            <rect key="frame" x="8" y="4" width="44" height="44"/>
+                                            <rect key="frame" x="8" y="8.6666666666666643" width="44" height="44"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="44" id="395-vC-jc9"/>
                                                 <constraint firstAttribute="height" constant="44" id="UYr-ee-LYr"/>
@@ -40,23 +40,35 @@
                                                 <action selector="completeButtonTapped:" destination="8pk-Ps-pC0" eventType="touchUpInside" id="fjQ-tb-vJv"/>
                                             </connections>
                                         </button>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Txd-D0-ePR">
-                                            <rect key="frame" x="52" y="15" width="305" height="22"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="hx5-9j-T1b">
+                                            <rect key="frame" x="52" y="8" width="325" height="45"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="ToDo One" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Txd-D0-ePR">
+                                                    <rect key="frame" x="0.0" y="0.0" width="325" height="20.333333333333332"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Due: " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gr0-lP-OOh">
+                                                    <rect key="frame" x="0.0" y="28.333333333333336" width="325" height="16.666666666666664"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </stackView>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="Txd-D0-ePR" firstAttribute="leading" secondItem="6TK-lr-2Q2" secondAttribute="trailing" id="7iH-WQ-LD7"/>
-                                        <constraint firstAttribute="bottomMargin" secondItem="Txd-D0-ePR" secondAttribute="bottom" id="Ctn-Wb-8Ts"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="Txd-D0-ePR" secondAttribute="trailing" constant="16" id="GId-Hr-cvG"/>
-                                        <constraint firstItem="6TK-lr-2Q2" firstAttribute="centerY" secondItem="4LN-la-waz" secondAttribute="centerY" id="O40-BC-Uhr"/>
-                                        <constraint firstItem="Txd-D0-ePR" firstAttribute="top" secondItem="4LN-la-waz" secondAttribute="topMargin" id="c82-4L-axh"/>
-                                        <constraint firstItem="6TK-lr-2Q2" firstAttribute="leading" secondItem="4LN-la-waz" secondAttribute="leading" constant="8" id="esb-ca-z1E"/>
+                                        <constraint firstItem="hx5-9j-T1b" firstAttribute="leading" secondItem="6TK-lr-2Q2" secondAttribute="trailing" id="80j-ve-aHX"/>
+                                        <constraint firstItem="hx5-9j-T1b" firstAttribute="top" secondItem="4LN-la-waz" secondAttribute="top" constant="8" id="HsI-Z0-XsD"/>
+                                        <constraint firstItem="6TK-lr-2Q2" firstAttribute="leading" secondItem="4LN-la-waz" secondAttribute="leading" constant="8" id="cif-AX-xVw"/>
+                                        <constraint firstItem="6TK-lr-2Q2" firstAttribute="centerY" secondItem="4LN-la-waz" secondAttribute="centerY" id="dgR-lo-U7c"/>
+                                        <constraint firstAttribute="trailing" secondItem="hx5-9j-T1b" secondAttribute="trailing" constant="16" id="htI-RJ-cvG"/>
+                                        <constraint firstAttribute="bottom" secondItem="hx5-9j-T1b" secondAttribute="bottom" constant="8" id="qDC-yO-yBt"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
+                                    <outlet property="dueDateLabel" destination="gr0-lP-OOh" id="m3h-nd-Fsu"/>
                                     <outlet property="isCompleteButton" destination="6TK-lr-2Q2" id="PId-fB-Qnb"/>
                                     <outlet property="titleLabel" destination="Txd-D0-ePR" id="97m-cf-rzg"/>
                                     <segue destination="X2l-Gj-MIl" kind="presentation" id="ubR-Rf-uj3"/>

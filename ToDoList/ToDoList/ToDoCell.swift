@@ -17,6 +17,14 @@ class ToDoCell: UITableViewCell {
     
     @IBOutlet weak var isCompleteButton: UIButton!
     @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var dueDateLabel: UILabel!
+    
+    static let dueDateFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            formatter.timeStyle = .short
+            return formatter
+        }()
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -28,7 +36,7 @@ class ToDoCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-
+    
     @IBAction func completeButtonTapped(_ sender: UIButton) {
         delegate?.checkmarkTapped(sender: self)
     }

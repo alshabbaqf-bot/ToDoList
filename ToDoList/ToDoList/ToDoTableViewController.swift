@@ -41,6 +41,31 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
         cell.isCompleteButton.isSelected = toDo.isComplete
         cell.delegate = self
         
+        // Show due date text
+        let formatted = ToDoCell.dueDateFormatter.string(from: toDo.dueDate)
+        cell.dueDateLabel.text = "Due: \(formatted)"
+
+        // Highlight rules
+        let now = Date()
+        let isOverdue = (toDo.dueDate < now) && (toDo.isComplete == false)
+
+        // Upcoming next 24 hours
+        let upcomingLimit = now.addingTimeInterval(24 * 60 * 60)
+        let isUpcoming = (toDo.dueDate >= now) && (toDo.dueDate <= upcomingLimit) && (toDo.isComplete == false)
+
+        if isOverdue {
+            cell.dueDateLabel.text = "Overdue: \(formatted)"
+            cell.dueDateLabel.textColor = .systemRed
+        } else if isUpcoming {
+            cell.dueDateLabel.text = "Soon: \(formatted)"
+            cell.dueDateLabel.textColor = .systemOrange
+        } else {
+            cell.dueDateLabel.textColor = .secondaryLabel
+        }
+        
+        // Dim the title for completed items
+        cell.titleLabel.textColor = toDo.isComplete ? .secondaryLabel : .label
+        
         return cell
     }
 
