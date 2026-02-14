@@ -16,6 +16,13 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
     private var isSearching: Bool = false
     
     private let searchController = UISearchController(searchResultsController: nil)
+    
+    private var groupedToDos: [(category: ToDoCategory, items: [ToDo])] {
+        ToDoCategory.allCases.map { category in
+            let items = toDos.filter { $0.category == category }
+            return (category, items)
+        }.filter { !$0.items.isEmpty }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,22 +41,40 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
         
         setupSearchController()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-    }
+    }// viewDidLoad end
     
     // MARK: - Table view data source
 
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return isSearching ? 1 : groupedToDos.count
+    }
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return isSearching ? filteredToDos.count : toDos.count
+        if isSearching {
+            return filteredToDos.count
+        } else {
+            return groupedToDos[section].items.count
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard !isSearching else { return nil }
+        return groupedToDos[section].category.rawValue
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCellIdentifier", for: indexPath) as! ToDoCell
 
-        let toDo = isSearching ? filteredToDos[indexPath.row] : toDos[indexPath.row]
+        let toDo: ToDo
+        if isSearching {
+            toDo = filteredToDos[indexPath.row]
+        } else {
+            toDo = groupedToDos[indexPath.section].items[indexPath.row]
+        }
+        
         cell.titleLabel?.text = toDo.title
         cell.isCompleteButton.isSelected = toDo.isComplete
+        
         cell.delegate = self
         
         // Show due date text
@@ -78,7 +103,7 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
         cell.titleLabel.textColor = toDo.isComplete ? .secondaryLabel : .label
         
         return cell
-    }
+    }// cellForRowAt end
 
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
@@ -96,8 +121,10 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
                     toDos.remove(at: mainIndex)
                 }
             } else {
-                toDoToDelete = toDos[indexPath.row]
-                toDos.remove(at: indexPath.row)
+                toDoToDelete = groupedToDos[indexPath.section].items[indexPath.row]
+                if let mainIndex = indexInMainList(for: toDoToDelete) {
+                    toDos.remove(at: mainIndex)
+                }
             }
 
             cancelNotification(for: toDoToDelete)
@@ -105,21 +132,6 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
             ToDo.saveToDos(toDos)
         }
     }
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
     
     @IBAction func unwindToToDoList(segue: UIStoryboardSegue) {
         guard segue.identifier == "saveUnwind" else { return }
@@ -160,8 +172,12 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
         
         tableView.deselectRow(at: indexPath, animated: true)
         
-        detailController?.toDo = isSearching ? filteredToDos[indexPath.row] : toDos[indexPath.row]
-        
+        if isSearching {
+            detailController?.toDo = filteredToDos[indexPath.row]
+        } else {
+            detailController?.toDo = groupedToDos[indexPath.section].items[indexPath.row]
+        }
+
         return detailController
     }
     
@@ -189,8 +205,10 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
             tableView.reloadRows(at: [indexPath], with: .automatic)
             ToDo.saveToDos(toDos)
         } else {
-            // Normal behavior (not searching)
-            var toDo = toDos[indexPath.row]
+            let toDoFromSection = groupedToDos[indexPath.section].items[indexPath.row]
+            guard let mainIndex = indexInMainList(for: toDoFromSection) else { return }
+
+            var toDo = toDos[mainIndex]
             toDo.isComplete.toggle()
 
             cancelNotification(for: toDo)
@@ -198,11 +216,12 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
                 scheduleNotification(for: toDo)
             }
 
-            toDos[indexPath.row] = toDo
-            tableView.reloadRows(at: [indexPath], with: .automatic)
+            toDos[mainIndex] = toDo
+            tableView.reloadData()
             ToDo.saveToDos(toDos)
         }
-    }
+
+    }// checkmarkTapped end
     
     private func requestNotificationAuthorization() {
         UNUserNotificationCenter.current()
@@ -276,10 +295,15 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
         filteredToDos = toDos.filter { toDo in
             let titleMatch = toDo.title.lowercased().contains(lower)
             let notesMatch = (toDo.notes ?? "").lowercased().contains(lower)
-            return titleMatch || notesMatch
+            let categoryMatch = toDo.category.rawValue.lowercased().contains(lower)
+            return titleMatch || notesMatch || categoryMatch
         }
-
+        
         tableView.reloadData()
+    }
+    
+    private func indexInMainList(for toDo: ToDo) -> Int? {
+        return toDos.firstIndex(of: toDo)
     }
 
 }// class end

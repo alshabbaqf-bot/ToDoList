@@ -11,6 +11,7 @@ class ToDoDetailTableViewController: UITableViewController {
 
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var isCompleteButton: UIButton!
+    @IBOutlet weak var categorySegmentedControl: UISegmentedControl!
     
     @IBOutlet weak var reminderSwitch: UISwitch!
     @IBOutlet weak var dueDateLabel: UILabel!
@@ -38,7 +39,16 @@ class ToDoDetailTableViewController: UITableViewController {
             currentDueDate = toDo.dueDate
             notesTextView.text = toDo.notes
             reminderSwitch.isOn = toDo.shouldRemind
-        } else {
+            
+            switch toDo.category {
+            case .work: categorySegmentedControl.selectedSegmentIndex = 0
+            case .personal: categorySegmentedControl.selectedSegmentIndex = 1
+            case .other: categorySegmentedControl.selectedSegmentIndex = 2
+            }
+            
+        }
+        else {
+            categorySegmentedControl.selectedSegmentIndex = 0
             currentDueDate = Date().addingTimeInterval(24*60*60)
             reminderSwitch.isOn = false
         }
@@ -160,14 +170,22 @@ class ToDoDetailTableViewController: UITableViewController {
          let notes = notesTextView.text
          let shouldRemind = reminderSwitch.isOn
          
+         let category: ToDoCategory
+         switch categorySegmentedControl.selectedSegmentIndex {
+         case 0: category = .work
+         case 1: category = .personal
+         default: category = .other
+         }
+         
          if toDo != nil {
              toDo?.title = title
              toDo?.isComplete = isComplete
              toDo?.dueDate = dueDate
              toDo?.notes = notes
              toDo?.shouldRemind = shouldRemind
+             toDo?.category = category
          } else {
-             toDo = ToDo(title: title, isComplete: isComplete, dueDate: dueDate, notes: notes, shouldRemind: shouldRemind)
+             toDo = ToDo(title: title, isComplete: isComplete, dueDate: dueDate, notes: notes, shouldRemind: shouldRemind, category: category)
          }
      }
 

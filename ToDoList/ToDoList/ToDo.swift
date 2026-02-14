@@ -7,6 +7,12 @@
 
 import Foundation
 
+enum ToDoCategory: String, CaseIterable, Codable {
+    case work = "Work"
+    case personal = "Personal"
+    case other = "Other"
+}
+
 struct ToDo: Equatable, Codable {
     let id: UUID
     var title: String
@@ -14,14 +20,16 @@ struct ToDo: Equatable, Codable {
     var dueDate: Date
     var notes: String?
     var shouldRemind: Bool
+    var category: ToDoCategory
     
-    init(title: String, isComplete: Bool, dueDate: Date, notes: String?, shouldRemind: Bool) {
+    init(title: String, isComplete: Bool, dueDate: Date, notes: String?, shouldRemind: Bool, category: ToDoCategory) {
         self.id = UUID()
         self.title = title
         self.isComplete = isComplete
         self.dueDate = dueDate
         self.notes = notes
         self.shouldRemind = shouldRemind
+        self.category = category
     }
     
     static let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -40,9 +48,9 @@ struct ToDo: Equatable, Codable {
     }
     
     static func loadSampleToDos() -> [ToDo] {
-        let todo1 = ToDo(title: "ToDo One", isComplete: false, dueDate: Date(), notes: "Notes 1", shouldRemind: false)
-        let todo2 = ToDo(title: "ToDo Two", isComplete: false, dueDate: Date(), notes: "Notes 2", shouldRemind: false)
-        let todo3 = ToDo(title: "ToDo Three", isComplete: false, dueDate: Date(), notes: "Notes 3", shouldRemind: false)
+        let todo1 = ToDo(title: "ToDo One", isComplete: false, dueDate: Date(), notes: "Notes 1", shouldRemind: false, category: .work)
+        let todo2 = ToDo(title: "ToDo Two", isComplete: false, dueDate: Date(), notes: "Notes 2", shouldRemind: false, category: .personal)
+        let todo3 = ToDo(title: "ToDo Three", isComplete: false, dueDate: Date(), notes: "Notes 3", shouldRemind: false, category: .other)
         
         return [todo1, todo2, todo3]
     }
