@@ -13,13 +13,15 @@ struct ToDo: Equatable, Codable {
     var isComplete: Bool
     var dueDate: Date
     var notes: String?
+    var shouldRemind: Bool
     
-    init(title: String, isComplete: Bool, dueDate: Date, notes: String?) {
+    init(title: String, isComplete: Bool, dueDate: Date, notes: String?, shouldRemind: Bool) {
         self.id = UUID()
         self.title = title
         self.isComplete = isComplete
         self.dueDate = dueDate
         self.notes = notes
+        self.shouldRemind = shouldRemind
     }
     
     static let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -38,9 +40,9 @@ struct ToDo: Equatable, Codable {
     }
     
     static func loadSampleToDos() -> [ToDo] {
-        let todo1 = ToDo(title: "ToDo One", isComplete: false, dueDate: Date(), notes: "Notes 1")
-        let todo2 = ToDo(title: "ToDo Two", isComplete: false, dueDate: Date(), notes: "Notes 2")
-        let todo3 = ToDo(title: "ToDo Three", isComplete: false, dueDate: Date(), notes: "Notes 3")
+        let todo1 = ToDo(title: "ToDo One", isComplete: false, dueDate: Date(), notes: "Notes 1", shouldRemind: false)
+        let todo2 = ToDo(title: "ToDo Two", isComplete: false, dueDate: Date(), notes: "Notes 2", shouldRemind: false)
+        let todo3 = ToDo(title: "ToDo Three", isComplete: false, dueDate: Date(), notes: "Notes 3", shouldRemind: false)
         
         return [todo1, todo2, todo3]
     }

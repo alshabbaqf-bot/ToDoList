@@ -11,15 +11,18 @@ class ToDoDetailTableViewController: UITableViewController {
 
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var isCompleteButton: UIButton!
+    
+    @IBOutlet weak var reminderSwitch: UISwitch!
     @IBOutlet weak var dueDateLabel: UILabel!
     @IBOutlet weak var dueDatePicker: UIDatePicker!
+    
     @IBOutlet weak var notesTextView: UITextView!
     
     @IBOutlet weak var saveButton: UIBarButtonItem!
     
     var isDatePickerHidden: Bool = true
-    let dateLabelIndexPath = IndexPath(row: 0, section: 1)
-    let datePickerIndexPath = IndexPath(row: 1, section: 1)
+    let dateLabelIndexPath = IndexPath(row: 1, section: 1)
+    let datePickerIndexPath = IndexPath(row: 2, section: 1)
     let notesIndexPath = IndexPath(row: 0, section: 2)
     
     var toDo: ToDo?
@@ -34,8 +37,10 @@ class ToDoDetailTableViewController: UITableViewController {
             isCompleteButton.isSelected = toDo.isComplete
             currentDueDate = toDo.dueDate
             notesTextView.text = toDo.notes
+            reminderSwitch.isOn = toDo.shouldRemind
         } else {
             currentDueDate = Date().addingTimeInterval(24*60*60)
+            reminderSwitch.isOn = false
         }
         
         dueDatePicker.date = currentDueDate
@@ -106,6 +111,10 @@ class ToDoDetailTableViewController: UITableViewController {
         isCompleteButton.isSelected.toggle()
     }
     
+    @IBAction func reminderSwitchChanged(_ sender: UISwitch) {
+        
+    }
+    
     // MARK: - Navigation
 
      override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -117,14 +126,16 @@ class ToDoDetailTableViewController: UITableViewController {
          let isComplete = isCompleteButton.isSelected
          let dueDate = dueDatePicker.date
          let notes = notesTextView.text
+         let shouldRemind = reminderSwitch.isOn
          
          if toDo != nil {
              toDo?.title = title
              toDo?.isComplete = isComplete
              toDo?.dueDate = dueDate
              toDo?.notes = notes
+             toDo?.shouldRemind = shouldRemind
          } else {
-             toDo = ToDo(title: title, isComplete: isComplete, dueDate: dueDate, notes: notes)
+             toDo = ToDo(title: title, isComplete: isComplete, dueDate: dueDate, notes: notes, shouldRemind: shouldRemind)
          }
      }
 
