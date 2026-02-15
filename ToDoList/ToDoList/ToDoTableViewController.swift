@@ -17,11 +17,34 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
     
     private let searchController = UISearchController(searchResultsController: nil)
     
-    private var groupedToDos: [(category: ToDoCategory, items: [ToDo])] {
-        ToDoCategory.allCases.map { category in
-            let items = toDos.filter { $0.category == category }
-            return (category, items)
-        }.filter { !$0.items.isEmpty }
+    private var groupedToDos: [(title: String, items: [ToDo])] {
+        var sections: [(title: String, items: [ToDo])] = []
+
+        // 1) Work
+        let workItems = toDos.filter { !$0.isComplete && $0.category == .work }
+        if !workItems.isEmpty {
+            sections.append((title: "Work", items: workItems))
+        }
+
+        // 2) Personal
+        let personalItems = toDos.filter { !$0.isComplete && $0.category == .personal }
+        if !personalItems.isEmpty {
+            sections.append((title: "Personal", items: personalItems))
+        }
+
+        // 3) Other
+        let otherItems = toDos.filter { !$0.isComplete && $0.category == .other }
+        if !otherItems.isEmpty {
+            sections.append((title: "Other", items: otherItems))
+        }
+
+        // 4) Completed
+        let completedItems = toDos.filter { $0.isComplete }
+        if !completedItems.isEmpty {
+            sections.append((title: "Completed", items: completedItems))
+        }
+
+        return sections
     }
 
     override func viewDidLoad() {
@@ -59,7 +82,7 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard !isSearching else { return nil }
-        return groupedToDos[section].category.rawValue
+        return groupedToDos[section].title
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

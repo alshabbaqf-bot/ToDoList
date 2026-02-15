@@ -48,14 +48,102 @@ struct ToDo: Equatable, Codable {
     }
     
     static func loadSampleToDos() -> [ToDo] {
-        let todo1 = ToDo(title: "ToDo One", isComplete: false, dueDate: Date(), notes: "Notes 1", shouldRemind: false, category: .work)
-        let todo2 = ToDo(title: "ToDo Two", isComplete: false, dueDate: Date(), notes: "Notes 2", shouldRemind: false, category: .personal)
-        let todo3 = ToDo(title: "ToDo Three", isComplete: false, dueDate: Date(), notes: "Notes 3", shouldRemind: false, category: .other)
         
-        return [todo1, todo2, todo3]
+        let now = Date()
+        
+        return [
+            // MARK: - Work
+            
+            ToDo(
+                title: "Submit project report",
+                isComplete: false,
+                dueDate: now.addingTimeInterval(60 * 60),
+                notes: "Upload final PDF to Moodle",
+                shouldRemind: true,
+                category: .work
+            ),
+            
+            ToDo(
+                title: "Team meeting",
+                isComplete: false,
+                dueDate: now.addingTimeInterval(3 * 24 * 60 * 60),
+                notes: "Discuss UI improvements",
+                shouldRemind: false,
+                category: .work
+            ),
+            
+            ToDo(
+                title: "Fix login bug",
+                isComplete: true,
+                dueDate: now.addingTimeInterval(-2 * 24 * 60 * 60),
+                notes: "Resolved navigation issue",
+                shouldRemind: false,
+                category: .work
+            ),
+            
+            // MARK: - Personal
+            
+            ToDo(
+                title: "Gym session",
+                isComplete: false,
+                dueDate: now.addingTimeInterval(24 * 60 * 60),
+                notes: "Leg day",
+                shouldRemind: true,
+                category: .personal
+            ),
+            
+            ToDo(
+                title: "Buy groceries",
+                isComplete: false,
+                dueDate: now.addingTimeInterval(-3 * 60 * 60),
+                notes: "Milk, eggs, rice",
+                shouldRemind: true,
+                category: .personal
+            ),
+            
+            ToDo(
+                title: "Call family",
+                isComplete: true,
+                dueDate: now.addingTimeInterval(-5 * 24 * 60 * 60),
+                notes: "",
+                shouldRemind: false,
+                category: .personal
+            ),
+            
+            // MARK: - Other
+            
+            ToDo(
+                title: "Read a book",
+                isComplete: false,
+                dueDate: now.addingTimeInterval(5 * 24 * 60 * 60),
+                notes: "Finish SwiftUI chapter",
+                shouldRemind: false,
+                category: .other
+            ),
+            
+            ToDo(
+                title: "Watch tutorial",
+                isComplete: false,
+                dueDate: now.addingTimeInterval(2 * 60 * 60),
+                notes: "UNUserNotificationCenter deep dive",
+                shouldRemind: true,
+                category: .other
+            ),
+            
+            ToDo(
+                title: "Old archived task",
+                isComplete: true,
+                dueDate: now.addingTimeInterval(-10 * 24 * 60 * 60),
+                notes: "",
+                shouldRemind: false,
+                category: .other
+            )
+        ]
     }
+
     
     static func == (lhs: ToDo, rhs: ToDo) -> Bool {
         return lhs.id == rhs.id
     }
-}
+    
+}// class end
