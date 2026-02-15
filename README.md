@@ -40,8 +40,7 @@
   - Filter by category keyword
 - Share task details using `UIActivityViewController`.
 - Local data persistence using Property List encoding.
-- Compatible with both iPhone and iPad layouts.
-
+  
 ---
 
 ## Compatibility
