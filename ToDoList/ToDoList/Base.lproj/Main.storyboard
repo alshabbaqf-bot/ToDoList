@@ -80,7 +80,7 @@
                             <outlet property="delegate" destination="ZjX-6a-CxA" id="niq-x9-4a6"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="My To-Dos" id="hhL-KF-GbH">
+                    <navigationItem key="navigationItem" title="My To-Dos" largeTitleDisplayMode="always" id="hhL-KF-GbH">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="wJQ-Jc-zad">
                             <connections>
                                 <segue destination="X2l-Gj-MIl" kind="presentation" id="UCY-J3-vZ7"/>
@@ -352,8 +352,8 @@
         <scene sceneID="pFM-Ug-Vo6">
             <objects>
                 <navigationController id="ZQM-vI-zyT" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="0V3-U0-2UY">
-                        <rect key="frame" x="0.0" y="118" width="393" height="54"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="0V3-U0-2UY">
+                        <rect key="frame" x="0.0" y="118" width="393" height="106"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
