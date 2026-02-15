@@ -112,11 +112,11 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let toDoToDelete: ToDo
-
+            
             if isSearching {
                 toDoToDelete = filteredToDos[indexPath.row]
                 filteredToDos.remove(at: indexPath.row)
-
+                
                 if let mainIndex = toDos.firstIndex(of: toDoToDelete) {
                     toDos.remove(at: mainIndex)
                 }
@@ -126,10 +126,10 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
                     toDos.remove(at: mainIndex)
                 }
             }
-
+            
             cancelNotification(for: toDoToDelete)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
             ToDo.saveToDos(toDos)
+            tableView.reloadData()
         }
     }
     
@@ -140,12 +140,12 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate, UNUserNo
         if let toDo = sourceViewController.toDo {
             if let indexOfExistingToDo = toDos.firstIndex(of: toDo) {
                 toDos[indexOfExistingToDo] = toDo
-                tableView.reloadRows(at: [IndexPath(row: indexOfExistingToDo, section: 0)], with: .automatic)
             } else {
-                let newIndexPath = IndexPath(row: toDos.count, section: 0)
                 toDos.append(toDo)
-                tableView.insertRows(at: [newIndexPath], with: .automatic)
             }
+
+            // Grouping/sections may change -> reload all
+            tableView.reloadData()
             
             cancelNotification(for: toDo)
             
